@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Nome from "./Components/nome";
 
 function App() {
@@ -6,7 +6,17 @@ function App() {
   const[input, setInput] = useState('')
   const[tarefas, setTarefas] = useState([])
 
-  const [user,setUser] = useState()
+  useEffect(() => {
+    const tarefasStorage = localStorage.getItem('@tarefa')
+
+    if(tarefasStorage){
+      setTarefas(JSON.parse(tarefasStorage))
+    }
+  },[])
+
+  useEffect(() => {
+    localStorage.setItem('@tarefa', JSON.stringify(tarefas))
+  },[tarefas])
 
   function handleRegistro(event){
     event.preventDefault()
