@@ -1,50 +1,48 @@
-import { useEffect, useState } from "react";
-import Nome from "./Components/nome";
+/* eslint-disable jsx-a11y/anchor-is-valid */
+import React,{ useEffect, useState } from "react";
+import './style.css';
 
 function App() {
 
-  const[input, setInput] = useState('')
-  const[tarefas, setTarefas] = useState([])
+  const[nutri,setNutri] = useState([])
 
   useEffect(() => {
-    const tarefasStorage = localStorage.getItem('@tarefa')
-
-    if(tarefasStorage){
-      setTarefas(JSON.parse(tarefasStorage))
-    }
+      function loadApi(){
+          let url = 'https://sujeitoprogramador.com/rn-api/?api=posts'
+          //Buscar api pela url
+          fetch(url)
+          // Transformando o resultado em JSON
+          .then((r) => r.json()
+          .then((json) => {
+            setNutri(json)
+          })
+          )
+      }
+      loadApi()
   },[])
 
-  useEffect(() => {
-    localStorage.setItem('@tarefa', JSON.stringify(tarefas))
-  },[tarefas])
-
-  function handleRegistro(event){
-    event.preventDefault()
-    setTarefas([...tarefas,input])
-    setInput('')
-  }
-
   return (
-   <div>
-    <h1>Cadastrando Usuario</h1>
-    <form onSubmit={handleRegistro}>
-      <label>Nome da Tarefa:</label><br/>
-      <input placeholder="Digite seu Nome" 
-      value={input} onChange={(event) => setInput(event.target.value)}
-      required/><br/>
-
-      <button type="submit">Registrar</button>
-    </form>
-    <br/>
-    <div>
-      {tarefas.map(tarefa => (
-        <ul>
-          <li key={tarefa}>{tarefa}</li>
-        </ul>
-      ))}
-    </div>
-   </div>
-  );
+      <div className="conteiner">
+        <header>
+          <strong>React Nutri</strong>
+        </header>
+        {nutri.map((item) => {
+          return(
+            <article key={item.id} className="post">
+              <strong className="titulo">
+                {item.titulo}
+              </strong>
+              <img src={item.capa} alt={item.titulo} className="capa"/>
+              <p className="subtitulo">
+                {item.subtitulo}
+              </p>
+              <h1> Categoria: {item.categoria}</h1>
+              <a className="botao">Acessar</a>
+            </article>
+          )
+        })}
+      </div>
+  )
 }
 
 export default App;
